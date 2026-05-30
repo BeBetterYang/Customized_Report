@@ -1,0 +1,72 @@
+{
+  "name": "customized-report",
+  "version": "1.0.0",
+  "private": true,
+  "main": "electron/main.cjs",
+  "description": "ERP report management desktop app",
+  "scripts": {
+    "client": "vite --host 0.0.0.0",
+    "server": "node server/index.js",
+    "dev": "concurrently -k -n api,web -c cyan,green \"npm:server\" \"npm:client\"",
+    "build": "tsc && vite build",
+    "prepare:default-state": "node scripts/prepare-default-state.cjs",
+    "desktop": "npm run build && electron .",
+    "pack:win": "npm run build && electron-builder --win nsis --x64",
+    "pack:win:configured": "npm run prepare:default-state && npm run pack:win",
+    "pack:dir": "npm run build && electron-builder --dir --x64",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mssql": "^12.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "concurrently": "^9.2.1",
+    "electron": "^37.3.1",
+    "electron-builder": "^26.0.12",
+    "lucide-react": "^0.545.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.3"
+  },
+  "build": {
+    "appId": "com.codex.customizedreport",
+    "productName": "ERP报表管理后台",
+    "compression": "maximum",
+    "directories": {
+      "output": "release"
+    },
+    "asar": true,
+    "files": [
+      "dist/**/*",
+      "default-state/**/*",
+      "electron/**/*",
+      "server/**/*",
+      "scripts/prepare-default-state.cjs",
+      "!server/**/*.test.js",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": true
+    }
+  }
+}
